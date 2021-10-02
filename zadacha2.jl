@@ -1,11 +1,11 @@
 function perimeter(r)
-    Nord_num = moves!(r, Nord)
-    Ost_num = moves!(r, Ost)
+    oy = moves!(r, Nord)
+    ox = moves!(r, Ost)
     for side in [Sud, West, Nord, Ost]
         putmarkers!(r,side)
     end
-    moves!(r,Sud, Nord_num)
-    moves!(r, West, Ost_num)
+    moves!(r,Sud, oy)
+    moves!(r, West, ox)
 end
 
 
