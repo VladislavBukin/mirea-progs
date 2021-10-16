@@ -1,51 +1,42 @@
+moves = []
 function mark_angles(r::Robot)
-  moves = []
-  # спуск в левый нижний угол #
-  go_to_corne!r(r, moves)
-  # Рисуем маркеры в углах #
-  print_markers(r)
-  # Возвращаемя в исоходную клетку #
-  return_back!(r)
+    go_to_corner!(r, moves)
+    print_markers(r)
+    return_back!(r::Robot, moves)
 end
 
-function go_to_corner!(r::Robot)
-  while !(isborder(r, West) && isborder(r, Sud))
-    if !isborder(r, West)
-      move!(r, West)
-      push!(moves, West)
+function go_to_corner!(r, moves)
+    while !(isborder(r, West) && isborder(r, Sud))
+        if !isborder(r, West)
+            move!(r, West)
+            push!(moves, West)
+        end
+        if !isborder(r, Sud)
+            move!(r, Sud)
+            push!(moves, Sud)
+        end
     end
-    if !isborder(r, Sud)
-      move!(r, Sud)
-      push!(moves, Sud)
+end
+
+
+function moves!(r, side)
+    while !isborder(r, side)
+        move!(r, side)
     end
-  end
 end
 
-function moves!(r, side) 
-  while !isborder(r, side)
-    move!(r, side)
-  end
+function print_markers(r)
+    for side in (Nord, Ost, Sud, West)
+        moves!(r,side)
+        putmarker!(r)
+    end
 end
 
+inverse(side::HorizonSide) = HorizonSide(mod(Int(side) + 2, 4))
 
-function print_markers!(r::Robot)
-  for side in (Nord, Ost, Sud, West)
-    moves!(r, side)
-    putmarker!(r)
-  end
-end
-
-    
-  
-end
-
-
-inverse(side::HorizonSide) = HorizonSide(mod(int(side)+2,4))
-  
-function return_back!(r, moves)
-  while lenght(moves) > 0 
-    side = pop!(moves)
-    move!(r, inverse(side))
-    
-  end
+function return_back!(r::Robot, moves)
+    while length(moves) > 0 
+        side = pop!(moves)
+        move!(r, inverse(side))
+    end
 end
