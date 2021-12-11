@@ -1,51 +1,63 @@
-using HorizonSideRobots
-inverse(side::HorizonSide) = HorizonSide(mod(int(side)+2,4))
+function main(r)
+    x = go_and_get_num_steps(r, West)
+    y = go_and_get_num_steps(r, Sud)
 
+    go_up_and_right(r)
 
-function markall(r::Robot)
-    Nnord = moves!(r, Nord)
-    Oost = moves!(r, Ost)
-    while !isborder(r, Sud)
-        putmarkers!(r, West)
-        putmarker!(r)
-        move!(r, Sud)
-        putmarkers!(r, Ost)
-        putmarker!(r)
-        move!(r,Sud)
+    start_mark(r, Sud)
+    if isborder(r, Sud)
+        mark_side(r, Nord)
     end
-    putmarkers!(r, West)
-    putmarker!(r)
+    mark_side(r, Sud)
+
+    move_n_steps(r, Nord, y)
+    move_n_steps(r, Ost, x)
+end
+
+
+function go_and_get_num_steps(r::Robot, side::HorizonSide) :: Int
+    n = 0 
+    while !isborder(r, side)
+        move!(r,side)
+        n += 1
+    end
+    return n
+end
+
+
+function go_up_and_right(r::Robot)
     while !isborder(r, Nord)
-        move!(r, Nord)
+        move!(r,Nord)
     end
     while !isborder(r, Ost)
         move!(r, Ost)
     end
-    putmarker!(r)
-    moves!(r, Sud, Nnord)
-    moves!(r, West, Oost)
-
 end
 
-function moves!(r, side)
-    counter = 0 
-    while !isborder(r, side)
-        move!(r, side)
-        counter += 1 
-    end 
-    return counter 
-end 
 
-function putmarkers!(r, side)
-    while !isborder(r, side)
-        putmarker!(r)
-        move!(r, side)
+function start_mark(r, side)
+    while !isborder(r, West)
+        mark_side(r, side)
+        side = inverse(side)
+        move!(r, West)
     end
 end
 
 
-function moves!(r::Robot, side::HorizonSide, num_steps::Int)
-    for steps in 1:num_steps
+function mark_side(r, side)
+    while !isborder(r, side)
+        putmarker!(r)
         move!(r, side)
+    end
+    putmarker!(r)
+end
+
+inverse(side) = HorizonSide(mod(Int(side)+2,4))
+
+
+function move_n_steps(r, side, n)
+    while n>0
+        move!(r, side)
+        n = n - 1
     end
 end
