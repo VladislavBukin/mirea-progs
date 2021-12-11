@@ -1,6 +1,6 @@
 function main(::Robot)
-    global A=[]
-    global B=[]
+    A=[]
+    B=[]
     help_main_2(r,Ost)
     help_main_1(r, Nord)
     help_main_1(r, West)
