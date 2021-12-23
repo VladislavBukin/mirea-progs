@@ -1,90 +1,85 @@
-function ex6(::Robot)
-    x1=x2=y1=y2=0
-    chetn=1
-    while (isborder(r,Sud)==false)
-        move!(r,Sud)
-        y1=y1+1
-    end
-    while (isborder(r,West)==false)
+function main(r::Robot)
+
+    path=go_to_right_upper_corner_and_get_path(r)
+    i=0
+    while !isborder(r,West)
         move!(r,West)
-        x1=x1+1
+        i=i+1
     end
-    while (isborder(r,Sud)==false)
+
+    n=i
+    m=West
+    while n==i
         move!(r,Sud)
-        y2=y2+1
+        n=0
+        m=inverse(m)
+        while !isborder(r,m)
+            move!(r,m)
+            n=n+1
+        end
     end
-    while (isborder(r,West)==false)
-        move!(r,West)
-        x2=x2+1
+
+    while isborder(r,m)==true
+        putmarker!(r)
+        move!(r,Sud)
     end
-    while (isborder(r,Nord)==false)
-        while (isborder(r,Nord)==false && isborder(r,Ost)==false)
+
+    putmarker!(r)
+    move!(r,m)
+
+    while isborder(r,Nord)==true
+        putmarker!(r)
+        move!(r,m)
+    end
+
+    putmarker!(r)
+    move!(r,Nord)
+
+    m=inverse(m)
+
+    while isborder(r,m)==true
+        putmarker!(r)
+        move!(r,Nord)
+    end
+
+    putmarker!(r)
+    move!(r,m)
+
+    while isborder(r,Sud)==true
+        putmarker!(r)
+        move!(r,m)
+    end
+
+    putmarker!(r)
+
+    go_to_right_upper_corner_and_get_path(r)
+    go_back(r,path)
+end
+
+
+inverse(side::HorizonSide) = HorizonSide(mod(Int(side)+2, 4))
+
+
+function go_to_right_upper_corner_and_get_path(r::Robot) ::Array
+    path=[]
+    while isborder(r,Nord)==false || isborder(r,Ost)==false
+        if isborder(r,Nord)==false
+            move!(r,Nord)
+            push!(path,Sud)
+        end
+        if isborder(r,Ost)==false
             move!(r,Ost)
-        end
-        if (isborder(r,Nord)==false)
-            move!(r,Nord)
-            chetn=2;
-        end
-        while (isborder(r,Nord)==false && isborder(r,West)==false)
-            move!(r,West)
-        end
-        if (isborder(r,Nord)==false)
-            move!(r,Nord)
-            chetn=1
+            push!(path,West)
         end
     end
-    if (chetn==1)
-        moves2(r,Nord,Ost)
-        putmarker!(r)
-        move!(r,Nord)
-        moves2(r,West,Nord)
-        putmarker!(r)
-        move!(r,West)
-        moves2(r,Sud,West)
-        putmarker!(r)
-        move!(r,Sud)
-        moves2(r,Ost,Sud)
-        putmarker!(r)
-    else
-        moves2(r,Nord,West)
-        putmarker!(r)
-        move!(r,Nord)
-        moves2(r,Ost,Nord)
-        putmarker!(r)
-        move!(r,Ost)
-        moves2(r,Sud,Ost)
-        putmarker!(r)
-        move!(r,Sud)
-        moves2(r,West,Sud)
-        putmarker!(r)
-    end
-    while (isborder(r,Sud)==false)
-        move!(r,Sud)
-    end
-    while (isborder(r,West)==false)
-        move!(r,West)
-    end
-    return_back(r,x1,x2,y1,y2)
+    return path
 end
 
-function moves2(::Robot, side1::HorizonSide, side2::HorizonSide)
-    while isborder(r,side1)
-        putmarker!(r)
-        move!(r,side2)
-    end
-end
 
-function return_back(r::Robot, x1,x2,y1,y2)
-    for i in 1:x2
-        move!(r, Ost)
-    end
-    for i in 1:y2
-        move!(r, Nord)
-    end
-    for i in 1:x1
-        move!(r, Ost)
-    end
-    for i in 1:y1
-        move!(r,Nord)
+function go_back(r,path::Array)
+    n=length(path)
+    while n>0
+        move!(r,path[n])
+        n=n-1
     end
 end
