@@ -7,14 +7,14 @@ function main(::Robot)
       if !ismarker(r)
         move!(r,West)
       end
-      main_moves(r, j)
+      spiral!(r, j)
       j += 2
   
     end
 end
   
   
-function main_moves!(::Robot, j::Int)
+function spiral!(::Robot, j::Int)
     help_moves!(r, j, Ost)
     help_moves!(r, j, Sud)
     help_moves!(r, j, West)
